@@ -33,7 +33,7 @@ export function ExperiencePositionItem({
 
   return (
     <CollapsibleWithContext defaultOpen={position.isExpanded} asChild>
-      <div className="relative last:before:absolute last:before:h-full last:before:w-4 last:before:bg-background">
+      <div className="relative last:before:absolute last:before:left-3 last:before:h-full last:before:w-1 last:before:bg-background">
         <CollapsibleTrigger
           className={cn(
             "block w-full text-left select-none",
