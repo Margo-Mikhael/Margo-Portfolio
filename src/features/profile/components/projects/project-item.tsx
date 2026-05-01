@@ -1,4 +1,4 @@
-import { InfinityIcon, LinkIcon } from "lucide-react";
+import { GithubIcon, LinkIcon } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -25,71 +25,73 @@ export function ProjectItem({
   className?: string;
   project: Project;
 }) {
-  const { start, end } = project.period;
-  const isOngoing = !end;
-
   return (
     <CollapsibleWithContext defaultOpen={project.isExpanded} asChild>
       <div className={className}>
-        <div className="flex items-center hover:bg-accent2">
-          {project.logo ? (
-            <Image
-              src={project.logo}
-              alt={project.title}
-              width={32}
-              height={32}
-              quality={100}
-              className="mx-4 flex size-6 shrink-0 select-none"
-              unoptimized
-              aria-hidden="true"
-            />
-          ) : (
-            <div
-              className="mx-4 flex size-6 shrink-0 items-center justify-center rounded-lg border border-muted-foreground/15 bg-muted text-muted-foreground ring-1 ring-edge ring-offset-1 ring-offset-background select-none"
-              aria-hidden="true"
-            >
-              <Icons.project className="size-4" />
-            </div>
-          )}
+        <div className="flex items-stretch hover:bg-accent2">
+          <div className="flex shrink-0 items-center justify-center px-4 select-none">
+            {project.image ? (
+              <Image
+                src={project.image}
+                alt={project.title}
+                width={80}
+                height={56}
+                quality={100}
+                className="h-12 w-16 rounded-md border border-edge object-cover"
+                unoptimized
+                aria-hidden="true"
+              />
+            ) : (
+              <div
+                className="flex size-10 items-center justify-center rounded-lg border border-muted-foreground/15 bg-muted text-muted-foreground ring-1 ring-edge ring-offset-1 ring-offset-background"
+                aria-hidden="true"
+              >
+                <Icons.project className="size-4" />
+              </div>
+            )}
+          </div>
 
           <div className="flex-1 border-l border-dashed border-edge">
-            <CollapsibleTrigger className="flex w-full items-center gap-4 p-4 pr-2 text-left select-none">
+            <CollapsibleTrigger className="flex w-full items-center gap-3 p-4 pr-2 text-left select-none">
               <div className="flex-1">
                 <h3 className="mb-1 leading-snug font-medium text-balance">
                   {project.title}
                 </h3>
 
-                <dl className="text-sm text-muted-foreground">
-                  <dt className="sr-only">Period</dt>
-                  <dd className="flex items-center gap-0.5">
-                    <span>{start}</span>
-                    <span className="font-mono">—</span>
-                    {isOngoing ? (
-                      <>
-                        <InfinityIcon
-                          className="size-4.5 translate-y-[0.5px]"
-                          aria-hidden
-                        />
-                        <span className="sr-only">Present</span>
-                      </>
-                    ) : (
-                      <span>{end}</span>
-                    )}
-                  </dd>
-                </dl>
+                {project.category && (
+                  <p className="text-sm text-muted-foreground">
+                    {project.category}
+                  </p>
+                )}
               </div>
 
-              <SimpleTooltip content="Open Project Link">
-                <a
-                  className="relative flex size-6 shrink-0 items-center justify-center text-muted-foreground after:absolute after:-inset-2 hover:text-foreground"
-                  href={addQueryParams(project.link, UTM_PARAMS)}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  <LinkIcon className="pointer-events-none size-4" />
-                  <span className="sr-only">Open Project Link</span>
-                </a>
-              </SimpleTooltip>
+              {project.demo && (
+                <SimpleTooltip content="Live Demo">
+                  <a
+                    className="relative flex size-6 shrink-0 items-center justify-center text-muted-foreground after:absolute after:-inset-2 hover:text-foreground"
+                    href={addQueryParams(project.demo, UTM_PARAMS)}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <LinkIcon className="pointer-events-none size-4" />
+                    <span className="sr-only">Live Demo</span>
+                  </a>
+                </SimpleTooltip>
+              )}
+
+              {project.code && project.code !== project.demo && (
+                <SimpleTooltip content="Source Code">
+                  <a
+                    className="relative flex size-6 shrink-0 items-center justify-center text-muted-foreground after:absolute after:-inset-2 hover:text-foreground"
+                    href={addQueryParams(project.code, UTM_PARAMS)}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <GithubIcon className="pointer-events-none size-4" />
+                    <span className="sr-only">Source Code</span>
+                  </a>
+                </SimpleTooltip>
+              )}
 
               <div
                 className="shrink-0 text-muted-foreground [&_svg]:size-4"

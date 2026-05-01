@@ -4,18 +4,13 @@ import { useCommandState } from "cmdk";
 import type { LucideProps } from "lucide-react";
 import {
   BriefcaseBusinessIcon,
-  CircleUserIcon,
   CornerDownLeftIcon,
+  GraduationCapIcon,
   LetterTextIcon,
-  MessageCircleMoreIcon,
-  MoonStarIcon,
-  RssIcon,
-  SunIcon,
   TextIcon,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   CommandDialog,
@@ -28,7 +23,6 @@ import {
 } from "@/components/ui/command";
 import type { Post } from "@/features/blog/types/post";
 import { SOCIAL_LINKS } from "@/features/profile/data/social-links";
-import { useSound } from "@/hooks/use-sound";
 import { cn } from "@/lib/utils";
 
 import { AbdulRehmanMark } from "./abdulrehman-mark";
@@ -46,19 +40,6 @@ type CommandLinkItem = {
   openInNewTab?: boolean;
 };
 
-const MENU_LINKS: CommandLinkItem[] = [
-  {
-    title: "Portfolio",
-    href: "/",
-    icon: AbdulRehmanMark,
-  },
-  {
-    title: "Projects",
-    href: "/blog",
-    icon: RssIcon,
-  },
-];
-
 const PORTFOLIO_LINKS: CommandLinkItem[] = [
   {
     title: "About",
@@ -66,9 +47,9 @@ const PORTFOLIO_LINKS: CommandLinkItem[] = [
     icon: LetterTextIcon,
   },
   {
-    title: "Tech Stack",
-    href: "/#stack",
-    icon: Icons.ts,
+    title: "Education",
+    href: "/#education",
+    icon: GraduationCapIcon,
   },
   {
     title: "Experience",
@@ -76,29 +57,14 @@ const PORTFOLIO_LINKS: CommandLinkItem[] = [
     icon: BriefcaseBusinessIcon,
   },
   {
-    title: "Projects",
-    href: "/#projects",
-    icon: Icons.project,
+    title: "Stack",
+    href: "/#stack",
+    icon: Icons.ts,
   },
   {
-    title: "Honors & Awards",
-    href: "/#awards",
-    icon: Icons.award,
-  },
-  {
-    title: "Certifications",
-    href: "/#certs",
+    title: "Certificates",
+    href: "/#certificates",
     icon: Icons.certificate,
-  },
-  {
-    title: "Testimonials",
-    href: "/#testimonials",
-    icon: MessageCircleMoreIcon,
-  },
-  {
-    title: "Download vCard",
-    href: "/vcard",
-    icon: CircleUserIcon,
   },
 ];
 
@@ -112,11 +78,7 @@ const SOCIAL_LINK_ITEMS: CommandLinkItem[] = SOCIAL_LINKS.map((item) => ({
 export function CommandMenu({ posts }: { posts: Post[] }) {
   const router = useRouter();
 
-  const { setTheme, resolvedTheme } = useTheme();
-
   const [open, setOpen] = useState(false);
-
-  const playClick = useSound("/audio/ui-sounds/click.wav");
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -156,22 +118,6 @@ export function CommandMenu({ posts }: { posts: Post[] }) {
       }
     },
     [router]
-  );
-
-  const createThemeHandler = useCallback(
-    (theme: "light" | "dark" | "system") => () => {
-      setOpen(false);
-      playClick();
-      setTheme(theme);
-
-      // if (!document.startViewTransition) {
-      //   setTheme(theme);
-      //   return;
-      // }
-
-      // document.startViewTransition(() => setTheme(theme));
-    },
-    [playClick, setTheme]
   );
 
   const { blogLinks, componentLinks } = useMemo(
@@ -228,14 +174,6 @@ export function CommandMenu({ posts }: { posts: Post[] }) {
           <CommandEmpty>No results found.</CommandEmpty>
 
           <CommandLinkGroup
-            heading="Menu"
-            links={MENU_LINKS}
-            onLinkSelect={handleOpenLink}
-          />
-
-          <CommandSeparator />
-
-          <CommandLinkGroup
             heading="Portfolio"
             links={PORTFOLIO_LINKS}
             onLinkSelect={handleOpenLink}
@@ -270,32 +208,6 @@ export function CommandMenu({ posts }: { posts: Post[] }) {
             links={SOCIAL_LINK_ITEMS}
             onLinkSelect={handleOpenLink}
           />
-
-          <CommandSeparator />
-
-          <CommandGroup heading="Theme">
-            <CommandItem
-              keywords={["theme"]}
-              onSelect={createThemeHandler("light")}
-            >
-              <SunIcon />
-              Light
-            </CommandItem>
-            <CommandItem
-              keywords={["theme"]}
-              onSelect={createThemeHandler("dark")}
-            >
-              <MoonStarIcon />
-              Dark
-            </CommandItem>
-            <CommandItem
-              keywords={["theme"]}
-              onSelect={createThemeHandler("system")}
-            >
-              <Icons.contrast />
-              Auto
-            </CommandItem>
-          </CommandGroup>
         </CommandList>
 
         <CommandMenuFooter />
@@ -357,12 +269,6 @@ type CommandMetaMap = Map<
 
 function buildCommandMetaMap() {
   const commandMetaMap: CommandMetaMap = new Map();
-
-  commandMetaMap.set("Download vCard", { commandKind: "command" });
-
-  commandMetaMap.set("Light", { commandKind: "command" });
-  commandMetaMap.set("Dark", { commandKind: "command" });
-  commandMetaMap.set("Auto", { commandKind: "command" });
 
   SOCIAL_LINK_ITEMS.forEach((item) => {
     commandMetaMap.set(item.title, {
