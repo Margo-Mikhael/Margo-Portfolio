@@ -1,17 +1,10 @@
 "use client";
 
-import { motion, useSpring } from "motion/react";
 import type { FC } from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export interface SmoothCursorProps {
   cursor?: React.ReactNode;
-  springConfig?: {
-    damping: number;
-    stiffness: number;
-    mass: number;
-    restDelta: number;
-  };
 }
 
 const DefaultCursorSVG: FC = () => {
@@ -78,27 +71,25 @@ const DefaultCursorSVG: FC = () => {
 
 export function SmoothCursor({
   cursor = <DefaultCursorSVG />,
-  springConfig = {
-    damping: 50,
-    stiffness: 1000,
-    mass: 0.5,
-    restDelta: 0.001,
-  },
 }: SmoothCursorProps) {
-  const cursorX = useSpring(0, springConfig);
-  const cursorY = useSpring(0, springConfig);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let rafId = 0;
+    let lastX = 0;
+    let lastY = 0;
+
+    const flush = () => {
+      rafId = 0;
+      if (ref.current) {
+        ref.current.style.transform = `translate3d(${lastX}px, ${lastY}px, 0) translate(-50%, -50%) rotate(-20deg)`;
+      }
+    };
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (rafId) return;
-
-      rafId = requestAnimationFrame(() => {
-        cursorX.set(e.clientX);
-        cursorY.set(e.clientY);
-        rafId = 0;
-      });
+      lastX = e.clientX;
+      lastY = e.clientY;
+      if (!rafId) rafId = requestAnimationFrame(flush);
     };
 
     document.body.style.cursor = "none";
@@ -109,22 +100,21 @@ export function SmoothCursor({
       document.body.style.cursor = "auto";
       if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [cursorX, cursorY]);
+  }, []);
 
   return (
-    <motion.div
+    <div
+      ref={ref}
       style={{
         position: "fixed",
-        left: cursorX,
-        top: cursorY,
-        translateX: "-50%",
-        translateY: "-50%",
+        top: 0,
+        left: 0,
         zIndex: 100,
         pointerEvents: "none",
         willChange: "transform",
       }}
     >
       {cursor}
-    </motion.div>
+    </div>
   );
 }

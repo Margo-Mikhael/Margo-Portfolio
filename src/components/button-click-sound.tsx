@@ -12,12 +12,12 @@ export function ButtonClickSound() {
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
-      const button = target.closest<HTMLElement>(
-        "button, [data-slot='button'], [role='button']"
+      const clickable = target.closest<HTMLElement>(
+        "button, [data-slot='button'], [role='button'], a[href]"
       );
-      if (!button) return;
-      if (button.hasAttribute("disabled")) return;
-      if (button.getAttribute("aria-disabled") === "true") return;
+      if (!clickable) return;
+      if (clickable.hasAttribute("disabled")) return;
+      if (clickable.getAttribute("aria-disabled") === "true") return;
 
       playClick();
     };

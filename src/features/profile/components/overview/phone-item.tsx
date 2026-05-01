@@ -1,6 +1,6 @@
 "use client";
 
-import { PhoneIcon } from "lucide-react";
+import { MessageCircleIcon } from "lucide-react";
 
 import { useIsClient } from "@/hooks/use-is-client";
 import { decodePhoneNumber, formatPhoneNumber } from "@/utils/string";
@@ -19,20 +19,22 @@ type PhoneItemProps = {
 export function PhoneItem({ phoneNumber }: PhoneItemProps) {
   const isClient = useIsClient();
   const phoneNumberDecoded = decodePhoneNumber(phoneNumber);
-  const isDubaiNumber = phoneNumberDecoded.startsWith("+971");
+  const whatsappNumber = phoneNumberDecoded.replace(/\D/g, "");
 
   return (
     <IntroItem>
       <IntroItemIcon>
-        <PhoneIcon />
+        <MessageCircleIcon />
       </IntroItemIcon>
 
       <IntroItemContent>
         <IntroItemLink
-          href={isClient ? `tel:${phoneNumberDecoded}` : "#"}
+          href={isClient ? `https://wa.me/${whatsappNumber}` : "#"}
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label={
             isClient
-              ? `Call ${formatPhoneNumber(phoneNumberDecoded)}`
+              ? `WhatsApp ${formatPhoneNumber(phoneNumberDecoded)}`
               : "Phone number"
           }
         >
@@ -40,11 +42,6 @@ export function PhoneItem({ phoneNumber }: PhoneItemProps) {
             ? formatPhoneNumber(phoneNumberDecoded)
             : "[Phone protected]"}
         </IntroItemLink>
-        {isClient && isDubaiNumber && (
-          <span className="text-muted-foreground" aria-hidden="true">
-            {" // Dubai, UAE"}
-          </span>
-        )}
       </IntroItemContent>
     </IntroItem>
   );

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { SOURCE_CODE_GITHUB_URL } from "@/config/site";
+import { GITHUB_USERNAME } from "@/config/site";
 
 import { Icons } from "./icons";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -9,7 +9,11 @@ export async function NavItemGitHub() {
     <Tooltip>
       <TooltipTrigger asChild>
         <Button variant="ghost" size="icon" asChild>
-          <a href={SOURCE_CODE_GITHUB_URL} target="_blank" rel="noopener">
+          <a
+            href={`https://github.com/${GITHUB_USERNAME}`}
+            target="_blank"
+            rel="noopener"
+          >
             <Icons.github />
             <span className="sr-only">GitHub</span>
           </a>
@@ -17,7 +21,7 @@ export async function NavItemGitHub() {
       </TooltipTrigger>
 
       <TooltipContent>
-        <p>Coding since 14y/o</p>
+        <p>@{GITHUB_USERNAME}</p>
       </TooltipContent>
     </Tooltip>
   );

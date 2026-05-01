@@ -19,8 +19,8 @@ export const PROJECTS: Project[] = [
     image: "/images/projects/inklusiv-admin.png",
     description:
       "Internal admin platform for Inklusiv — dashboards, user management, and AI workflow controls.",
-    demo: "https://www.inklusiv.team",
-    code: "https://www.inklusiv.team",
+    demo: "https://agreeable-bay-02b25b803.6.azurestaticapps.net/",
+    code: "https://agreeable-bay-02b25b803.6.azurestaticapps.net/",
     skills: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
   },
   {
@@ -34,7 +34,7 @@ export const PROJECTS: Project[] = [
     code: "https://github.com/Margo-Mikhael/task-manager.git",
     skills: ["React", "React-dnd", "Sass"],
   },
-    {
+  {
     id: "ecommerce-freshcart",
     title: "E-Commerce Website",
     category: "React.js",
