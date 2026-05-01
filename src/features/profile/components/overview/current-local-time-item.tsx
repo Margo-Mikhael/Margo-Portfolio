@@ -51,7 +51,7 @@ export function CurrentLocalTimeItem({ timeZone }: CurrentLocalTimeItemProps) {
 
       // Get time in target timezone using TZDate
       const targetTime = TZDate.tz(timeZone);
-      const formattedTime = format(targetTime, "HH:mm");
+      const formattedTime = format(targetTime, "h:mm a");
       setTimeString(formattedTime);
 
       // Get hour for clock icon (1-12)

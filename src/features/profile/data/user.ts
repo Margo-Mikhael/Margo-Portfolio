@@ -5,23 +5,13 @@ export const USER: User = {
   lastName: "Waseem",
   displayName: "Margo Mikhael",
   username: "abdulrehmanwaseem",
-  gender: "male",
-  pronouns: "he/him",
   bio: "Creating with code. Small details matter.",
-  timeZone: "Asia/Karachi",
-  flipSentences: [
-    "Fullstack Web Developer",
-    "AI Agent Engineer",
-    "Mobile App Developer",
-    "3D Web Developer",
-    "Desktop Application Developer",
-  ],
-  address: "Karachi City, Pakistan",
-  phoneNumber: "KzkyMzExODExNDgwNQ==", // E.164 format, base64 encoded (https://t.io.vn/
-  secondPhoneNumber: "Kzk3MSA1NSA1NjMgMzI4OQ==",
-  // base64-string-converter)
-  email: "Y29udGFjdEBhYmR1bHJlaG1hbndhc2VlbS5tZQ==", // base64 encoded
-  website: "https://abdulrehmanwaseem.me",
+  timeZone: "Africa/Cairo",
+  flipSentences: ["Frontend Developer", "Software Engineer"],
+  address: "Cairo, Egypt",
+  phoneNumber: "KzIwMTAxMzEwMzA1MQ==", // E.164 format, base64 encoded (https://t.io.vn/base64-string-converter)
+  email: "bWFyZ29taWtoYWVsbEBnbWFpbC5jb20=", // base64 encoded
+  website: "https://margomikhael.com",
   jobTitle: "Fullstack Developer",
   jobs: [
     {
@@ -29,24 +19,15 @@ export const USER: User = {
       company: "inklusiv.team",
       website: "https://inklusiv.team",
     },
-    {
-      title: "Founder",
-      company: "ShopFlow",
-      website: "/products/shopflow",
-    },
   ],
   about: `
-- **Fullstack Developer** with **4+ years of experience**, started coding at age 14; known for clean architecture and attention to detail.
-- Expertise in **MERN stack**, **Next.js**, **NestJS**, **React Native**, **Electron**, and **3D technologies**; building scalable web, mobile, desktop, and immersive 3D applications.
-- Now at **18 years old**, what some view as a limitation, I see as my greatest advantage—starting early gave me the freedom to learn, experiment and build a strong foundation combining practical experience with theoretical knowledge.
-- Creator of [ShopFlow](/products/shopflow): modern SaaS shop management system
-  - Built with **PERN stack** (PostgreSQL, Express, React, Node.js) and **Prisma ORM**
-  - Invoice management (purchases, sales, expenses), inventory tracking and payment status monitoring
-  - Real-time dashboard with financial insights and automated low-stock alerts
-- **Passionate** about exploring new technologies and turning ideas into reality through polished, production-ready projects. Currently exploring **System Design** and aiming to venture into **AI**.
-- **Mission:** Creating software that delivers exceptional user experiences while constantly adapting to stay at the forefront of technology.
+I'm Margo — a Computer Science graduate who fell for the front of the stack. These days I build production interfaces with React, Next.js, and TypeScript at Inklusiv, focusing on the details most people never notice but always feel.
+
+I care about clean, accessible code — and just as much about the human on the other side of the screen.
+
+Every green square below is a day I showed up and shipped. Consistency, like good design, is built one commit at a time.
 `,
-  avatar: "/images/me.jpg",
+  avatar: "/images/me.jpeg",
   ogImage: "/images/og-image-light.png",
   namePronunciationUrl: "/audio/abdulrehman.mp3",
   keywords: [

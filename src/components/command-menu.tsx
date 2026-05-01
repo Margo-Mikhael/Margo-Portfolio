@@ -64,20 +64,6 @@ const MENU_LINKS: CommandLinkItem[] = [
     href: "/blog",
     icon: RssIcon,
   },
-  {
-    title: "Products",
-    href: "/products",
-    icon: Icons.react,
-  },
-];
-
-const PRODUCT_LINKS: CommandLinkItem[] = [
-  {
-    title: "ShopFlow",
-    href: "/products/shopflow",
-    icon: Icons.react,
-    keywords: ["shop", "management", "pos", "pern", "inventory"],
-  },
 ];
 
 const PORTFOLIO_LINKS: CommandLinkItem[] = [
@@ -279,23 +265,18 @@ export function CommandMenu({ posts }: { posts: Post[] }) {
 
           <CommandSeparator />
 
-          {hasComponents ? (
-            <CommandLinkGroup
-              heading="Components"
-              links={componentLinks}
-              fallbackIcon={Icons.react}
-              onLinkSelect={handleOpenLink}
-            />
-          ) : (
-            <CommandLinkGroup
-              heading="Products"
-              links={PRODUCT_LINKS}
-              fallbackIcon={Icons.react}
-              onLinkSelect={handleOpenLink}
-            />
-          )}
+          {hasComponents && (
+            <>
+              <CommandLinkGroup
+                heading="Components"
+                links={componentLinks}
+                fallbackIcon={Icons.react}
+                onLinkSelect={handleOpenLink}
+              />
 
-          <CommandSeparator />
+              <CommandSeparator />
+            </>
+          )}
 
           <CommandLinkGroup
             heading="Social Links"

@@ -3,23 +3,23 @@ export function AbdulRehmanMark(props: React.ComponentProps<"svg">) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
-      viewBox="0 0 512 256"
+      viewBox="0 0 44 28"
+      shapeRendering="crispEdges"
       {...props}
     >
       <path
         fill="currentColor"
         d="
-            M48 0h96v64H48V0Z
-            M0 64h64v64H0V64Z
-            M128 64h64v64h-64V64Z
-            M0 128h192v64H0v-64Z
-            M0 192h64v64H0v-64Z
-            M128 192h64v64h-64v-64Z
-            M256 0h64v256h-64V0Z
-            M320 0h128v64H320V0Z
-            M448 64h64v64h-64V64Z
-            M320 128h128v64H320v-64Z
-            M448 192h64v64h-64v-64Z
+            M0 0h4v28H0V0Z
+            M16 0h4v28h-4V0Z
+            M4 4h4v4H4V4Z
+            M12 4h4v4h-4V4Z
+            M8 8h4v8H8V8Z
+            M24 0h4v28h-4V0Z
+            M40 0h4v28h-4V0Z
+            M28 4h4v4h-4V4Z
+            M36 4h4v4h-4V4Z
+            M32 8h4v8h-4V8Z
           "
       ></path>
     </svg>
@@ -27,5 +27,5 @@ export function AbdulRehmanMark(props: React.ComponentProps<"svg">) {
 }
 
 export function getMarkSVG(color: string) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 256 128"><path fill="${color}" d="M96 128H32V96h64v32ZM224 32h-64v64h64v32h-96V0h96v32ZM32 96H0V32h32v64ZM256 96h-32V32h32v64ZM96 32H32V0h64v32Z"/></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 44 28" shape-rendering="crispEdges"><path fill="${color}" d="M0 0h4v28H0V0ZM16 0h4v28h-4V0ZM4 4h4v4H4V4ZM12 4h4v4h-4V4ZM8 8h4v8H8V8ZM24 0h4v28h-4V0ZM40 0h4v28h-4V0ZM28 4h4v4h-4V4ZM36 4h4v4h-4V4ZM32 8h4v8h-4V8Z"/></svg>`;
 }

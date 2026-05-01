@@ -61,7 +61,6 @@ export const metadata: Metadata = {
     firstName: USER.firstName,
     lastName: USER.lastName,
     username: USER.username,
-    gender: USER.gender,
     images: [
       {
         url: SITE_INFO.ogImage,

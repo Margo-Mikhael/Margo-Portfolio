@@ -1,4 +1,4 @@
-import { GlobeIcon, MapPinIcon, MarsIcon, VenusIcon } from "lucide-react";
+import { GlobeIcon, MapPinIcon } from "lucide-react";
 
 import { USER } from "@/features/profile/data/user";
 import { urlToName } from "@/utils/url";
@@ -20,28 +20,13 @@ export function Overview() {
     <Panel>
       <h2 className="sr-only">Overview</h2>
 
-      <PanelContent className="space-y-2.5">
-        <JobItem
-          title={USER.jobs[0].title}
-          company={USER.jobs[0].company}
-          website={USER.jobs[0].website}
-        />
-
+      <PanelContent>
         <div className="grid gap-x-12 gap-y-2.5 sm:grid-cols-2">
           <JobItem
-            title={USER.jobs[1].title}
-            company={USER.jobs[1].company}
-            website={USER.jobs[1].website}
+            title={USER.jobs[0].title}
+            company={USER.jobs[0].company}
+            website={USER.jobs[0].website}
           />
-
-          <IntroItem>
-            <IntroItemIcon>
-              {USER.gender === "male" ? <MarsIcon /> : <VenusIcon />}
-            </IntroItemIcon>
-            <IntroItemContent aria-label={`Pronouns: ${USER.pronouns}`}>
-              {USER.pronouns}
-            </IntroItemContent>
-          </IntroItem>
 
           <IntroItem>
             <IntroItemIcon>
@@ -60,8 +45,6 @@ export function Overview() {
           <CurrentLocalTimeItem timeZone={USER.timeZone} />
 
           <PhoneItem phoneNumber={USER.phoneNumber} />
-
-          <PhoneItem phoneNumber={USER.secondPhoneNumber} />
 
           <EmailItem email={USER.email} />
 

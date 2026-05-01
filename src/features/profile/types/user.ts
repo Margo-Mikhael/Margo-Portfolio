@@ -5,10 +5,6 @@ export type User = {
   displayName: string;
   /** Handle/username used in links or mentions */
   username: string;
-  /** e.g. "male", "female", "non-binary" */
-  gender: string;
-  /** e.g. "he/him", "she/her", "they/them" */
-  pronouns: string;
   bio: string;
   /** Short phrases rotated in UI (e.g., homepage flip effect) */
   flipSentences: string[];
@@ -16,7 +12,6 @@ export type User = {
   address: string;
   /** E.164 format, base64 encoded (https://t.io.vn/base64-string-converter) */
   phoneNumber: string;
-  secondPhoneNumber: string;
   /** base64 encoded (https://t.io.vn/base64-string-converter) */
   email: string;
   /** Personal/homepage URL */
