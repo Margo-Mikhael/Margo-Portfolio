@@ -34,9 +34,20 @@ export const PROJECTS: Project[] = [
     code: "https://github.com/Margo-Mikhael/task-manager.git",
     skills: ["React", "React-dnd", "Sass"],
   },
+    {
+    id: "ecommerce-freshcart",
+    title: "E-Commerce Website",
+    category: "React.js",
+    image: "/images/projects/Ecommerce.png",
+    description:
+      "React e-commerce app with product listings, cart, and auth. Styled with Tailwind.",
+    demo: "https://github.com/Margo-Mikhael/ecommerce-freshcart",
+    code: "https://github.com/Margo-Mikhael/ecommerce-freshcart",
+    skills: ["React", "Axios", "Tailwind"],
+  },
   {
     id: "blog-post",
-    title: "Blog Post",
+    title: "Fullstack Blog Post",
     category: "Fullstack",
     image: "/images/projects/BlogPost.png",
     description:
@@ -44,17 +55,6 @@ export const PROJECTS: Project[] = [
     demo: "https://github.com/Margo-Mikhael/NodeJs-BlogApp",
     code: "https://github.com/Margo-Mikhael/NodeJs-BlogApp",
     skills: ["Node.js", "Express", "MongoDB"],
-  },
-  {
-    id: "ecommerce-freshcart",
-    title: "E-Commerce Website",
-    category: "React.js",
-    image: "/images/projects/Ecommercfe.png",
-    description:
-      "React e-commerce app with product listings, cart, and auth. Styled with Tailwind.",
-    demo: "https://github.com/Margo-Mikhael/ecommerce-freshcart",
-    code: "https://github.com/Margo-Mikhael/ecommerce-freshcart",
-    skills: ["React", "Axios", "Tailwind"],
   },
   {
     id: "portfolio",
