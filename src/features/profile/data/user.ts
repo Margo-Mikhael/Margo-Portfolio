@@ -25,9 +25,9 @@ export const USER: User = {
   jobTitle: "Fullstack Developer",
   jobs: [
     {
-      title: "Senior Fullstack Developer & 3D Web Specialist At",
-      company: "Forrof.io",
-      website: "https://forrof.io?ref=IN-926722",
+      title: "L1 Frontend Engineer",
+      company: "inklusiv.team",
+      website: "https://inklusiv.team",
     },
     {
       title: "Founder",
