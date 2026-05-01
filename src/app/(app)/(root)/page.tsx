@@ -2,7 +2,9 @@ import dayjs from "dayjs";
 import type { ProfilePage as PageSchema, WithContext } from "schema-dts";
 
 import { About } from "@/features/profile/components/about";
+import { Blog } from "@/features/profile/components/blog";
 import { Certifications } from "@/features/profile/components/certifications";
+import { Education } from "@/features/profile/components/education";
 import { Experiences } from "@/features/profile/components/experiences";
 import { GitHubContributions } from "@/features/profile/components/github-contributions";
 import { Overview } from "@/features/profile/components/overview";
@@ -41,17 +43,23 @@ export default function Page() {
 
         <GitHubContributions />
         <Separator />
+                <Education />
+        <Separator />
 
         {/* <TestimonialsMarquee />
         <Separator /> */}
 
+        <Blog />
+        <Separator />
+        
+
         <TeckStack />
         <Separator />
 
-        <Projects />
+        <Experiences />
         <Separator />
 
-        <Experiences />
+        <Projects />
         <Separator />
 
         <Certifications />

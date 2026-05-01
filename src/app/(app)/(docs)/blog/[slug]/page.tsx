@@ -131,7 +131,7 @@ export default async function Page({
         >
           <Link href="/blog">
             <ArrowLeftIcon />
-            Blog
+            Projects
           </Link>
         </Button>
 

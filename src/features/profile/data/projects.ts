@@ -13,8 +13,6 @@ export const PROJECTS: Project[] = [
       "Express.js",
       "PostgreSQL",
     ],
-    isExpanded: true,
-
     description: `A complete shop management system built using the PERN stack.  
 - Authentication and invoice management  
 - Real-time financial tracking and dashboards  

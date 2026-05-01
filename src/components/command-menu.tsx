@@ -6,22 +6,17 @@ import {
   BriefcaseBusinessIcon,
   CircleUserIcon,
   CornerDownLeftIcon,
-  DownloadIcon,
   LetterTextIcon,
   MessageCircleMoreIcon,
   MoonStarIcon,
   RssIcon,
   SunIcon,
   TextIcon,
-  TriangleDashedIcon,
-  TypeIcon,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
-
 import {
   CommandDialog,
   CommandEmpty,
@@ -35,10 +30,8 @@ import type { Post } from "@/features/blog/types/post";
 import { SOCIAL_LINKS } from "@/features/profile/data/social-links";
 import { useSound } from "@/hooks/use-sound";
 import { cn } from "@/lib/utils";
-import { copyText } from "@/utils/copy";
 
-import { AbdulRehmanMark, getMarkSVG } from "./abdulrehman-mark";
-import { getWordmarkSVG } from "./abdulrehman-wordmark";
+import { AbdulRehmanMark } from "./abdulrehman-mark";
 import { Icons } from "./icons";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
@@ -60,7 +53,7 @@ const MENU_LINKS: CommandLinkItem[] = [
     icon: AbdulRehmanMark,
   },
   {
-    title: "Blog",
+    title: "Projects",
     href: "/blog",
     icon: RssIcon,
   },
@@ -165,12 +158,6 @@ export function CommandMenu({ posts }: { posts: Post[] }) {
     [router]
   );
 
-  const handleCopyText = useCallback((text: string, message: string) => {
-    setOpen(false);
-    copyText(text);
-    toast.success(message);
-  }, []);
-
   const createThemeHandler = useCallback(
     (theme: "light" | "dark" | "system") => () => {
       setOpen(false);
@@ -257,7 +244,7 @@ export function CommandMenu({ posts }: { posts: Post[] }) {
           <CommandSeparator />
 
           <CommandLinkGroup
-            heading="Blog"
+            heading="Projects"
             links={blogLinks}
             fallbackIcon={TextIcon}
             onLinkSelect={handleOpenLink}
@@ -283,48 +270,6 @@ export function CommandMenu({ posts }: { posts: Post[] }) {
             links={SOCIAL_LINK_ITEMS}
             onLinkSelect={handleOpenLink}
           />
-
-          <CommandSeparator />
-
-          <CommandGroup heading="Brand Assets">
-            <CommandItem
-              onSelect={() => {
-                handleCopyText(
-                  getMarkSVG(resolvedTheme === "light" ? "#000" : "#fff"),
-                  "Copied Mark as SVG"
-                );
-              }}
-            >
-              <AbdulRehmanMark />
-              Copy Mark as SVG
-            </CommandItem>
-
-            <CommandItem
-              onSelect={() => {
-                handleCopyText(
-                  getWordmarkSVG(resolvedTheme === "light" ? "#000" : "#fff"),
-                  "Copied Logotype as SVG"
-                );
-              }}
-            >
-              <TypeIcon />
-              Copy Logotype as SVG
-            </CommandItem>
-
-            <CommandItem
-              onSelect={() => handleOpenLink("/blog/chanhdai-brand")}
-            >
-              <TriangleDashedIcon />
-              Brand Guidelines
-            </CommandItem>
-
-            <CommandItem asChild>
-              <a href="https://assets.chanhdai.com/chanhdai-brand.zip" download>
-                <DownloadIcon />
-                Download Brand Assets
-              </a>
-            </CommandItem>
-          </CommandGroup>
 
           <CommandSeparator />
 
@@ -418,16 +363,6 @@ function buildCommandMetaMap() {
   commandMetaMap.set("Light", { commandKind: "command" });
   commandMetaMap.set("Dark", { commandKind: "command" });
   commandMetaMap.set("Auto", { commandKind: "command" });
-
-  commandMetaMap.set("Copy Mark as SVG", {
-    commandKind: "command",
-  });
-  commandMetaMap.set("Copy Logotype as SVG", {
-    commandKind: "command",
-  });
-  commandMetaMap.set("Download Brand Assets", {
-    commandKind: "command",
-  });
 
   SOCIAL_LINK_ITEMS.forEach((item) => {
     commandMetaMap.set(item.title, {

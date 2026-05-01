@@ -1,4 +1,5 @@
 import { InfinityIcon } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 
 import { Markdown } from "@/components/markdown";
@@ -18,8 +19,14 @@ import { ExperienceIcon } from "./experience-position-icon";
 
 export function ExperiencePositionItem({
   position,
+  companyLogo,
+  companyName,
+  isCurrentEmployer,
 }: {
   position: ExperiencePosition;
+  companyLogo?: string;
+  companyName?: string;
+  isCurrentEmployer?: boolean;
 }) {
   const { start, end } = position.employmentPeriod;
   const isOngoing = !end;
@@ -36,17 +43,35 @@ export function ExperiencePositionItem({
           <div className="relative z-1 mb-1 flex items-center gap-3">
             <div
               className={cn(
-                "flex size-6 shrink-0 items-center justify-center rounded-lg",
+                "flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-full",
                 "bg-muted text-muted-foreground",
                 "border border-muted-foreground/15 ring-1 ring-edge ring-offset-1 ring-offset-background"
               )}
               aria-hidden
             >
-              <ExperienceIcon className="size-4" icon={position.icon} />
+              {companyLogo ? (
+                <Image
+                  src={companyLogo}
+                  alt={companyName ?? ""}
+                  width={28}
+                  height={28}
+                  className="size-full object-cover"
+                  unoptimized
+                />
+              ) : (
+                <ExperienceIcon className="size-4" icon={position.icon} />
+              )}
             </div>
 
-            <h4 className="flex-1 font-medium text-balance">
+            <h4 className="flex flex-1 items-center gap-2 font-medium text-balance">
               {position.title}
+              {isCurrentEmployer && (
+                <span className="relative flex shrink-0 items-center justify-center">
+                  <span className="absolute inline-flex size-3 animate-ping rounded-full bg-info opacity-50" />
+                  <span className="relative inline-flex size-2 rounded-full bg-info" />
+                  <span className="sr-only">Current Employer</span>
+                </span>
+              )}
             </h4>
 
             <div

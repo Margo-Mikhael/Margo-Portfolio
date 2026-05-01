@@ -4,7 +4,7 @@ import { PostItem } from "@/features/blog/components/post-item";
 import { getAllPosts } from "@/features/blog/data/posts";
 
 export const metadata: Metadata = {
-  title: "Blog",
+  title: "Projects",
   description: "A collection of articles on development, design, and ideas.",
 };
 
@@ -14,7 +14,7 @@ export default function Page() {
   return (
     <>
       <div className="screen-line-after px-4">
-        <h1 className="text-3xl font-semibold">Blog</h1>
+        <h1 className="text-3xl font-semibold">Projects</h1>
       </div>
 
       <div className="screen-line-after p-4">

@@ -1,16 +1,16 @@
 import React from "react";
 
 import { EXPERIENCES } from "../../data/experiences";
+import { ExperienceItem } from "../experiences/experience-item";
 import { Panel, PanelHeader, PanelTitle } from "../panel";
-import { ExperienceItem } from "./experience-item";
 
-export function Experiences() {
-  const items = EXPERIENCES.filter((item) => item.id !== "education");
+export function Education() {
+  const items = EXPERIENCES.filter((item) => item.id === "education");
 
   return (
-    <Panel id="experience">
+    <Panel id="education">
       <PanelHeader>
-        <PanelTitle>Experience</PanelTitle>
+        <PanelTitle>Education</PanelTitle>
       </PanelHeader>
 
       <div className="pr-2 pl-4">

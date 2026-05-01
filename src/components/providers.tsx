@@ -8,6 +8,7 @@ import { ThemeProvider } from "next-themes";
 
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 
+import { ButtonClickSound } from "./button-click-sound";
 import { Toaster } from "./ui/sonner";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -31,6 +32,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         </AppProgressProvider>
         <Toaster position="top-center" />
         <SmoothCursor />
+        <ButtonClickSound />
         <Analytics />
         <SpeedInsights />
       </ThemeProvider>
