@@ -12,17 +12,17 @@ export const PROJECTS: Project[] = [
     code: "https://www.inklusiv.team",
     skills: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
   },
-  {
-    id: "inklusiv-admin",
-    title: "Inklusiv Backoffice",
-    category: "React.js",
-    image: "/images/projects/inklusiv-admin.png",
-    description:
-      "Internal admin platform for Inklusiv — dashboards, user management, and AI workflow controls.",
-    demo: "https://agreeable-bay-02b25b803.6.azurestaticapps.net/",
-    code: "https://agreeable-bay-02b25b803.6.azurestaticapps.net/",
-    skills: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-  },
+  // {
+  //   id: "inklusiv-admin",
+  //   title: "Inklusiv Backoffice",
+  //   category: "React.js",
+  //   image: "/images/projects/inklusiv-admin.png",
+  //   description:
+  //     "Internal admin platform for Inklusiv — dashboards, user management, and AI workflow controls.",
+  //   demo: "https://agreeable-bay-02b25b803.6.azurestaticapps.net/",
+  //   code: "https://agreeable-bay-02b25b803.6.azurestaticapps.net/",
+  //   skills: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+  // },
   {
     id: "kanban-task-board",
     title: "Kanban Task Board",
