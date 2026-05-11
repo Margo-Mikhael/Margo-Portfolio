@@ -1,3 +1,4 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import type { NextConfig } from "next";
 import path from "path";
 
@@ -58,3 +59,7 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+// Enables `getCloudflareContext()` (and Cloudflare bindings) during `next dev`.
+// Safe no-op when not running on Cloudflare.
+initOpenNextCloudflareForDev();
