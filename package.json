@@ -23,10 +23,8 @@
   "scripts": {
     "dev": "next dev -p 1408",
     "build": "next build",
-    "start": "next start",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "cf-build": "opennextjs-cloudflare build",
+    "preview": "next build && wrangler dev",
+    "deploy": "next build && wrangler deploy",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "check-types": "tsc --noEmit --pretty",
@@ -71,7 +69,6 @@
     "zod": "^3.25.0"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.19.9",
     "@tailwindcss/postcss": "^4.1.16",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20.14.12",

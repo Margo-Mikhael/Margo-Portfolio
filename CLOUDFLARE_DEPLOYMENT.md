@@ -1,128 +1,86 @@
-# Deploying to Cloudflare Workers (Free plan) & leaving Vercel
+# Deploying to Cloudflare (Free) — static site
 
-This project runs on **Cloudflare Workers** via [OpenNext](https://opennext.js.org/cloudflare)
-(`@opennextjs/cloudflare`). Everything below fits the **Workers Free plan**.
+This portfolio is a **fully static Next.js export** (`output: "export"` → `out/`). Cloudflare serves
+`out/` as **Workers static assets** — there is **no server/Worker script**, so the 3 MiB Worker size
+limit does not apply and it runs comfortably on the **Free plan**.
 
-The plan: let **Cloudflare Workers Builds** (Cloudflare's native GitHub integration) build and
-deploy on every push to `main` — no GitHub Actions, no API tokens, no Vercel.
+> Why static? A full Next.js server on Cloudflare (via OpenNext) bundled to ~3.8 MiB gzipped — over the
+> 3 MiB Free-plan Worker limit. Since every route in this site is static/SSG, exporting to plain files
+> sidesteps the limit entirely (the deployed "Worker" is ~0.4 KiB — just the asset router).
+
+Build command: **`npx next build`** → deploy with **`npx wrangler deploy`** (serves `out/` per `wrangler.jsonc`).
 
 ---
 
 ## What already changed in the repo
 
-These were done in code so the dashboard steps below are all that's left for you:
-
-- ✅ Removed `vercel.json` and the `@vercel/analytics` / `@vercel/speed-insights` packages + code.
-- ✅ Hardened the build-time GitHub-contributions fetch so a third-party API outage can't fail a deploy.
-- ✅ `wrangler.jsonc`, `open-next.config.ts`, and the `cf-build` / `deploy` npm scripts are ready.
-- ✅ `next.config.ts` sets `images.unoptimized: true` (free-plan safe — see [Images](#images)).
-- ✅ **Kept the Worker under the 3 MiB Free limit** (the untrimmed Worker was 4.55 MiB gzipped):
-  - Fine-grained **Shiki** highlighter in `src/components/mdx.tsx` — only the languages the blog uses
-    are bundled, not all ~217 (−~1.1 MiB).
-  - Removed the runtime **OG-image** routes (`/og/simple`, `/og/domain`), which pulled in `@vercel/og`'s
-    1.3 MiB WASM. Blog posts now use the static site preview image (`USER.ogImage`) instead of
-    auto-generated per-title cards (−~1.5 MiB). Result: **~2.0 MiB gzipped.**
-
-Build command used by CI: **`npx opennextjs-cloudflare build`** → deploy with **`npx wrangler deploy`**.
+- ✅ `next.config.ts` → `output: "export"` (+ `images.unoptimized`, required for export).
+- ✅ Removed OpenNext (`@opennextjs/cloudflare`, `open-next.config.ts`); `wrangler.jsonc` now serves `out/`
+  as static assets (`name: "margoportfolio"`, matching the repo).
+- ✅ Removed Vercel (`vercel.json`, `@vercel/analytics`, `@vercel/speed-insights`).
+- ✅ Added `export const dynamic = "force-static"` to the route handlers / metadata routes that needed it
+  (robots, sitemap, manifest, rss, vcard, the `(llms)` text routes, `blog.mdx/[slug]`).
+- ✅ Blog OG images are static (`USER.ogImage` / per-post frontmatter) instead of a runtime `next/og` route.
+- ✅ Hardened the build-time GitHub-contributions fetch so a third-party API outage can't fail a build.
 
 ---
 
 ## Part A — Stop Vercel from deploying
 
-1. **Vercel dashboard** → your project → **Settings → Git → Disconnect** (or **Settings → Delete Project**).
-   Either one stops Vercel from building on every push. Disconnecting Git is enough and reversible.
-2. *(Optional)* Remove Vercel's access to the repo: **GitHub → Settings → Integrations → Applications →
-   Vercel → Configure →** remove the repo (or revoke). Not required, just tidy.
-3. **DNS (do NOT change yet):** in **Cloudflare → your domain → DNS**, note the record currently pointing
-   to Vercel — usually a `CNAME` to `cname.vercel-dns.com` or an `A` record to `76.76.21.21`.
-   You'll replace it in Part C after the Worker is live.
+1. **Vercel dashboard** → your project → **Settings → Git → Disconnect** (or **Delete Project**).
+2. **DNS (do NOT change yet):** in **Cloudflare → your domain → DNS**, note the record pointing to Vercel
+   (usually a `CNAME` to `cname.vercel-dns.com` or an `A` to `76.76.21.21`). You'll replace it in Part C.
 
-## Part B — Connect the repo to Cloudflare Workers Builds
+## Part B — Point Cloudflare Workers Builds at the static export
 
-> First push the current branch to GitHub so Cloudflare can see the latest code.
+You already connected the repo. You only need to **change the build command**:
 
-1. **Cloudflare dashboard → Workers & Pages → Create → Workers → Import a repository**
-   (a.k.a. "Connect to Git").
-2. Authorize the **Cloudflare GitHub app** and select this repository.
-3. Set the **build configuration**:
+1. Worker (`margoportfolio`) → **Settings → Build**:
    | Field | Value |
    |---|---|
-   | Project name | `my-portfolio` (this becomes the `*.workers.dev` subdomain) |
+   | **Build command** | `npx next build` |
+   | **Deploy command** | `npx wrangler deploy` |
    | Production branch | `main` |
-   | Build command | `npx opennextjs-cloudflare build` |
-   | Deploy command | `npx wrangler deploy` |
-   | Root directory | *(leave as `/`)* |
+   | Node version (build var) | `NODE_VERSION = 22.20.0` |
 
-   > ⚠️ **Critical:** the Build command MUST be `npx opennextjs-cloudflare build`, **not** `npm run build`.
-   > Cloudflare's generic Next.js preset defaults to `npm run build` (plain `next build`), which does NOT
-   > produce the `.open-next/` output the deploy needs — you'll get
-   > `ERROR Could not find compiled Open Next config, did you run the build command?` at the deploy step.
-4. Add a **build variable** so CI uses the right Node version:
-   - `NODE_VERSION = 22.20.0` (matches `.nvmrc`). The repo's `.npmrc` already sets `legacy-peer-deps=true`,
-     so the default `npm install` works.
-5. **Save and Deploy.** Cloudflare builds on its **Linux** runners (this avoids the local
-   "OpenNext is not fully compatible with Windows" issue) and deploys the Worker.
-6. When it finishes, open the `https://my-portfolio.<your-subdomain>.workers.dev` URL and click around.
-   - 👀 **In the deploy log, find `Total Upload: … / gzip: …`.** After the Shiki + OG trims above, the
-     Worker is **~2.0 MiB gzipped**, under the **3 MiB** Free limit. If you later add heavy runtime
-     dependencies and it reports *"exceeded the size limit of 3 MiB"*, see [Troubleshooting](#troubleshooting).
+   > The old build command was `npx opennextjs-cloudflare build` — change it to **`npx next build`**.
+   > The updated `wrangler.jsonc` (committed) serves `out/` as static assets; `wrangler deploy` just uploads
+   > those files. There is no Worker bundle to exceed any size limit.
+2. **Save**, then **Retry deployment** (or push a commit). The deploy log should end with a small
+   `Total Upload` and **succeed** — no more "exceeded the size limit of 3 MiB".
 
-## Part C — Point your domain at the Worker
+*(Alternative: you can instead create a **Cloudflare Pages** project on the same repo — framework preset
+"Next.js (Static HTML Export)", output dir `out`. Same result; Pages is purpose-built for static sites.)*
 
-Your domain is already in Cloudflare, so this is quick:
+## Part C — Point your domain at it
 
-1. **Worker → Settings → Domains & Routes → Add → Custom Domain.** Enter your hostname(s), e.g.
-   `yourdomain.com` and `www.yourdomain.com`.
-2. Cloudflare **creates/updates the proxied DNS record automatically**, replacing the old Vercel target.
-   If an old Vercel `CNAME`/`A` record is still there afterward, delete it in the **DNS** tab.
-3. Wait for the certificate (usually < 1 minute), then load your domain. Done.
+1. Worker → **Settings → Domains & Routes → Add → Custom Domain** → enter your hostname(s).
+2. Cloudflare creates/updates the proxied DNS record, replacing the old Vercel target. Delete any leftover
+   Vercel `CNAME`/`A` record in **DNS**.
 
-## Part D — *(optional)* Cloudflare Web Analytics — replaces Vercel Analytics
+## Part D — *(optional)* Cloudflare Web Analytics
 
-**Analytics & Logs → Web Analytics → Add a site.** Because your domain is proxied through Cloudflare,
-enable the **automatic setup** — no code changes, free, privacy-friendly. (Or copy the beacon snippet if
-you prefer manual.)
+**Analytics & Logs → Web Analytics → Add a site** → automatic setup (no code), free.
 
 ---
 
-## Ongoing workflow
+## Local development
 
-- **Push to `main` → Cloudflare rebuilds & deploys automatically.** That's the whole loop.
-- Enable **preview deployments** for non-production branches in the Workers Builds settings if you want per-PR URLs.
-- Local dev is unchanged: `npm run dev`.
-- To preview the actual Worker locally (`npm run preview`) you need **Linux or WSL** — OpenNext's bundler
-  isn't fully Windows-compatible. CI (Linux) handles real builds, so this only matters for local testing.
+- `npm run dev` → dev server at http://localhost:1408 (hot reload).
+- `npm run build` → static export to `out/`.
+- `npm run preview` → build + `wrangler dev` (serves `out/` locally the way Cloudflare will).
+- `npm run deploy` → build + `wrangler deploy` (needs `wrangler login` once).
 
-## Images
+## Static-export trade-offs (all intentional)
 
-`images.unoptimized: true` is set because the Workers **Free** plan has no built-in Next.js image
-optimizer, and Cloudflare **Image Transformations** (`/cdn-cgi/image/…`) is a **paid** feature.
-Originals are served directly — fine for a portfolio. To enable optimization later: turn on Image
-Transformations (paid) and switch to a custom loader per
-<https://opennext.js.org/cloudflare/howtos/image>.
+- **Blog social cards** use a static image (`USER.ogImage`) instead of auto-generated per-title cards.
+- **Homepage GitHub graph** refreshes on each build/deploy (no runtime ISR). Push, or set up a scheduled
+  rebuild, to refresh it.
+- **`/blog/:slug.mdx` rewrite** is gone (unsupported in export); the raw MDX is still at `/blog.mdx/<slug>`.
 
 ## Troubleshooting
 
-**"Could not find compiled Open Next config, did you run the build command?" (at the deploy step):**
-Your **Build command** is `npm run build` (plain `next build`) instead of `npx opennextjs-cloudflare build`,
-so `.open-next/` was never produced. Fix: Worker → **Settings → Build → Build command** →
-`npx opennextjs-cloudflare build`, then redeploy.
-
-**"Your Worker exceeded the size limit of 3 MiB" (Free plan):** the two big levers are already applied
-(fine-grained Shiki + no runtime `@vercel/og` — see the checklist at the top), leaving ~2.0 MiB. Note:
-the *only* accurate size measurement is Cloudflare's deploy log — the local Windows build can't run the
-final `wrangler` bundling step, so don't trust local size guesses. If you add heavy runtime deps and go
-over again:
-- Analyze the bundle: after `npx opennextjs-cloudflare build`, inspect
-  `.open-next/server-functions/default/handler.mjs.meta.json` with an esbuild bundle analyzer.
-- If you re-add per-title OG images, generate them at **build time** (static PNGs) rather than a runtime
-  `next/og` route, so `@vercel/og`'s WASM doesn't ship to the Worker.
-- Add languages to `BLOG_LANGS` in `src/components/mdx.tsx` only as you actually use them.
-- Or upgrade to **Workers Paid ($5/mo)** → 10 MiB limit.
-
-**Build fails on an external `fetch`:** the GitHub-contributions call is already wrapped in try/catch.
-If you add other build-time fetches, wrap them the same way so a flaky API can't break deploys.
-
-**Persistent ISR/fetch cache (optional):** not needed for this site. If you ever want it, create an R2
-bucket and uncomment the R2 binding in `wrangler.jsonc` + `incrementalCache` in `open-next.config.ts`
-(R2 has its own free tier).
+- **"export const dynamic … not configured" at build:** a new route handler needs
+  `export const dynamic = "force-static"` (static export can't run request-time handlers).
+- **A page needs request-time data** (cookies/headers/live fetch per request): static export can't do that.
+  Either make it build-time, or move that one piece to a small separate Worker / Pages Function.

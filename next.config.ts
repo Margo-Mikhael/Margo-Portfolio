@@ -1,8 +1,10 @@
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  // Fully static site — no server runtime. `next build` emits `out/`, which is
+  // served by Cloudflare (Pages / Workers static assets) with no Worker size limit.
+  output: "export",
   reactStrictMode: true,
   transpilePackages: ["next-mdx-remote"],
   allowedDevOrigins: ["abdulrehman-macbook.local"],
@@ -11,11 +13,8 @@ const nextConfig: NextConfig = {
   },
   devIndicators: false,
   images: {
-    // Cloudflare Workers Free plan has no built-in Next.js image optimizer, and
-    // Cloudflare Image Transformations (/cdn-cgi/image) is a paid feature. Serving
-    // originals keeps everything on the free plan. To enable optimization later,
-    // turn on Image Transformations (paid) and switch to a custom loader:
-    // https://opennext.js.org/cloudflare/howtos/image
+    // Static export requires the built-in Next image optimizer to be disabled.
+    // Originals are served as-is (fine for a portfolio).
     unoptimized: true,
     remotePatterns: [
       {
@@ -26,46 +25,8 @@ const nextConfig: NextConfig = {
     ],
     qualities: [75, 100],
   },
-  async rewrites() {
-    return [
-      {
-        source: "/blog/:slug.mdx",
-        destination: "/blog.mdx/:slug",
-      },
-      {
-        source: "/components/:slug.mdx",
-        destination: "/blog.mdx/:slug",
-      },
-    ];
-  },
-  // async headers() {
-  //   return [
-  //     {
-  //       source: "/(.*)",
-  //       headers: [
-  //         {
-  //           // Prevents MIME type sniffing, reducing the risk of malicious file uploads
-  //           key: "X-Content-Type-Options",
-  //           value: "nosniff",
-  //         },
-  //         {
-  //           // Protects against clickjacking attacks by preventing your site from being embedded in iframes.
-  //           key: "X-Frame-Options",
-  //           value: "DENY",
-  //         },
-  //         {
-  //           // Controls how much referrer information is included with requests, balancing security and functionality.
-  //           key: "Referrer-Policy",
-  //           value: "strict-origin-when-cross-origin",
-  //         },
-  //       ],
-  //     },
-  //   ];
-  // },
+  // NOTE: `rewrites()` is not supported with `output: "export"` (there is no server
+  // to run them). The raw-MDX pages are still generated statically at /blog.mdx/<slug>.
 };
 
 export default nextConfig;
-
-// Enables `getCloudflareContext()` (and Cloudflare bindings) during `next dev`.
-// Safe no-op when not running on Cloudflare.
-initOpenNextCloudflareForDev();

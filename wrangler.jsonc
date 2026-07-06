@@ -1,24 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "my-portfolio",
-  "main": ".open-next/worker.js",
+  "name": "margoportfolio",
   "compatibility_date": "2025-09-01",
-  "compatibility_flags": ["nodejs_compat"],
+  // Static site: serve the Next.js static export (`out/`) directly as assets.
+  // There is no Worker script, so the 3 MiB Worker size limit does not apply.
   "assets": {
-    "binding": "ASSETS",
-    "directory": ".open-next/assets"
-  },
-  "observability": {
-    "enabled": true
+    "directory": "./out",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
   }
-  /**
-   * Optional: enable persistent ISR / fetch cache.
-   * Create an R2 bucket (`npx wrangler r2 bucket create my-portfolio-cache`),
-   * set `incrementalCache: r2IncrementalCache` in open-next.config.ts,
-   * and uncomment the binding below.
-   *
-   * "r2_buckets": [
-   *   { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "my-portfolio-cache" }
-   * ]
-   */
 }

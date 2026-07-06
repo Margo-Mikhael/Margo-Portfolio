@@ -4,6 +4,9 @@ import type { MetadataRoute } from "next";
 import { SITE_INFO } from "@/config/site";
 import { getAllPosts } from "@/features/blog/data/posts";
 
+// Static export: render this route to a file at build time.
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts().map((post) => ({
     url: `${SITE_INFO.url}/blog/${post.slug}`,

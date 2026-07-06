@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { getAllPosts } from "@/features/blog/data/posts";
 import { getLLMText } from "@/features/blog/lib/get-llm-text";
 
+// Static export: render this route to a file at build time.
+export const dynamic = "force-static";
+
 export async function generateStaticParams() {
   const posts = getAllPosts();
 
