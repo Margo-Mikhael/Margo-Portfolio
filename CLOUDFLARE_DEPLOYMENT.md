@@ -47,7 +47,10 @@ Build command used by CI: **`npx opennextjs-cloudflare build`** → deploy with 
    | Deploy command | `npx wrangler deploy` |
    | Root directory | *(leave as `/`)* |
 
-   If Cloudflare offers a **Next.js / OpenNext framework preset**, pick it — it prefills the two commands above.
+   > ⚠️ **Critical:** the Build command MUST be `npx opennextjs-cloudflare build`, **not** `npm run build`.
+   > Cloudflare's generic Next.js preset defaults to `npm run build` (plain `next build`), which does NOT
+   > produce the `.open-next/` output the deploy needs — you'll get
+   > `ERROR Could not find compiled Open Next config, did you run the build command?` at the deploy step.
 4. Add a **build variable** so CI uses the right Node version:
    - `NODE_VERSION = 22.20.0` (matches `.nvmrc`). The repo's `.npmrc` already sets `legacy-peer-deps=true`,
      so the default `npm install` works.
@@ -95,6 +98,11 @@ Transformations (paid) and switch to a custom loader per
 <https://opennext.js.org/cloudflare/howtos/image>.
 
 ## Troubleshooting
+
+**"Could not find compiled Open Next config, did you run the build command?" (at the deploy step):**
+Your **Build command** is `npm run build` (plain `next build`) instead of `npx opennextjs-cloudflare build`,
+so `.open-next/` was never produced. Fix: Worker → **Settings → Build → Build command** →
+`npx opennextjs-cloudflare build`, then redeploy.
 
 **"Your Worker exceeded the size limit of 3 MiB" (Free plan):** — not expected for this app (runtime
 Worker ≈ 0.6 MiB gzipped), but if you add large runtime dependencies later:
