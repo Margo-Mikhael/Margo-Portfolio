@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
   },
   devIndicators: false,
   images: {
+    // Cloudflare Workers Free plan has no built-in Next.js image optimizer, and
+    // Cloudflare Image Transformations (/cdn-cgi/image) is a paid feature. Serving
+    // originals keeps everything on the free plan. To enable optimization later,
+    // turn on Image Transformations (paid) and switch to a custom loader:
+    // https://opennext.js.org/cloudflare/howtos/image
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
