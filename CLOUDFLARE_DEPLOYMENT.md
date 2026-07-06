@@ -16,6 +16,12 @@ These were done in code so the dashboard steps below are all that's left for you
 - ✅ Hardened the build-time GitHub-contributions fetch so a third-party API outage can't fail a deploy.
 - ✅ `wrangler.jsonc`, `open-next.config.ts`, and the `cf-build` / `deploy` npm scripts are ready.
 - ✅ `next.config.ts` sets `images.unoptimized: true` (free-plan safe — see [Images](#images)).
+- ✅ **Kept the Worker under the 3 MiB Free limit** (the untrimmed Worker was 4.55 MiB gzipped):
+  - Fine-grained **Shiki** highlighter in `src/components/mdx.tsx` — only the languages the blog uses
+    are bundled, not all ~217 (−~1.1 MiB).
+  - Removed the runtime **OG-image** routes (`/og/simple`, `/og/domain`), which pulled in `@vercel/og`'s
+    1.3 MiB WASM. Blog posts now use the static site preview image (`USER.ogImage`) instead of
+    auto-generated per-title cards (−~1.5 MiB). Result: **~2.0 MiB gzipped.**
 
 Build command used by CI: **`npx opennextjs-cloudflare build`** → deploy with **`npx wrangler deploy`**.
 
@@ -57,11 +63,9 @@ Build command used by CI: **`npx opennextjs-cloudflare build`** → deploy with 
 5. **Save and Deploy.** Cloudflare builds on its **Linux** runners (this avoids the local
    "OpenNext is not fully compatible with Windows" issue) and deploys the Worker.
 6. When it finishes, open the `https://my-portfolio.<your-subdomain>.workers.dev` URL and click around.
-   - 👀 **In the deploy log, find `Total Upload: … / gzip: …`.** This project's runtime Worker is
-     **~0.6 MiB gzipped** (the blog is statically pre-rendered, so Shiki syntax highlighting runs at
-     *build* time and never ships to the Worker), so it sits **comfortably under the 3 MiB Free limit**.
-     In the unlikely event it ever reports *"exceeded the size limit of 3 MiB"*, see
-     [Troubleshooting](#troubleshooting).
+   - 👀 **In the deploy log, find `Total Upload: … / gzip: …`.** After the Shiki + OG trims above, the
+     Worker is **~2.0 MiB gzipped**, under the **3 MiB** Free limit. If you later add heavy runtime
+     dependencies and it reports *"exceeded the size limit of 3 MiB"*, see [Troubleshooting](#troubleshooting).
 
 ## Part C — Point your domain at the Worker
 
@@ -104,14 +108,16 @@ Your **Build command** is `npm run build` (plain `next build`) instead of `npx o
 so `.open-next/` was never produced. Fix: Worker → **Settings → Build → Build command** →
 `npx opennextjs-cloudflare build`, then redeploy.
 
-**"Your Worker exceeded the size limit of 3 MiB" (Free plan):** — not expected for this app (runtime
-Worker ≈ 0.6 MiB gzipped), but if you add large runtime dependencies later:
+**"Your Worker exceeded the size limit of 3 MiB" (Free plan):** the two big levers are already applied
+(fine-grained Shiki + no runtime `@vercel/og` — see the checklist at the top), leaving ~2.0 MiB. Note:
+the *only* accurate size measurement is Cloudflare's deploy log — the local Windows build can't run the
+final `wrangler` bundling step, so don't trust local size guesses. If you add heavy runtime deps and go
+over again:
 - Analyze the bundle: after `npx opennextjs-cloudflare build`, inspect
-  `.open-next/server-functions/default/handler.mjs.meta.json` with an esbuild bundle analyzer to see
-  what's biggest.
-- If you make the blog render **dynamically** (drop `generateStaticParams` / add runtime MDX), Shiki
-  would then ship to the Worker — restrict it to the languages you use in `src/components/mdx.tsx` via
-  a fine-grained `shiki/core` highlighter.
+  `.open-next/server-functions/default/handler.mjs.meta.json` with an esbuild bundle analyzer.
+- If you re-add per-title OG images, generate them at **build time** (static PNGs) rather than a runtime
+  `next/og` route, so `@vercel/og`'s WASM doesn't ship to the Worker.
+- Add languages to `BLOG_LANGS` in `src/components/mdx.tsx` only as you actually use them.
 - Or upgrade to **Workers Paid ($5/mo)** → 10 MiB limit.
 
 **Build fails on an external `fetch`:** the GitHub-contributions call is already wrapped in try/catch.

@@ -5,7 +5,44 @@ import type { LineElement } from "rehype-pretty-code";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
+import { getHighlighterCore } from "shiki/core";
+import bash from "shiki/langs/bash.mjs";
+import css from "shiki/langs/css.mjs";
+import diff from "shiki/langs/diff.mjs";
+import html from "shiki/langs/html.mjs";
+import javascript from "shiki/langs/javascript.mjs";
+import json from "shiki/langs/json.mjs";
+import jsonc from "shiki/langs/jsonc.mjs";
+import jsx from "shiki/langs/jsx.mjs";
+import markdown from "shiki/langs/markdown.mjs";
+import tsx from "shiki/langs/tsx.mjs";
+import typescript from "shiki/langs/typescript.mjs";
+import yaml from "shiki/langs/yaml.mjs";
+import githubDark from "shiki/themes/github-dark.mjs";
+import githubLight from "shiki/themes/github-light.mjs";
+import getWasm from "shiki/wasm";
 import { visit } from "unist-util-visit";
+
+// Fine-grained Shiki bundle: preload only the languages used across the blog +
+// component source instead of Shiki's ~217 bundled languages. Cloudflare's final
+// (wrangler) bundle inlines every reachable Shiki grammar into the Worker, so the
+// full set pushes it over the 3 MiB Free-plan limit. rehype-pretty-code calls
+// `loadLanguage(name)` for languages it finds; those names are already loaded here,
+// and its `Promise.allSettled` safely ignores the string-form no-ops.
+const BLOG_LANGS = [
+  bash,
+  css,
+  diff,
+  html,
+  javascript,
+  json,
+  jsonc,
+  jsx,
+  markdown,
+  tsx,
+  typescript,
+  yaml,
+];
 
 import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper";
 import { ComponentPreview } from "@/components/component-preview";
@@ -179,6 +216,13 @@ const options: MDXRemoteProps["options"] = {
             dark: "github-dark",
             light: "github-light",
           },
+          getHighlighter: (options: object) =>
+            getHighlighterCore({
+              ...options,
+              themes: [githubDark, githubLight],
+              langs: BLOG_LANGS,
+              loadWasm: getWasm,
+            }),
           keepBackground: false,
           onVisitLine(node: LineElement) {
             // Prevent lines from collapsing in `display: grid` mode, and allow empty
